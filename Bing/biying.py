@@ -4,32 +4,42 @@ import json
 from urllib.request import urlretrieve
 
 
-def download_image(url):
+def getImageUrl(url):
     header = {
         'Referer': 'https://cn.bing.com/',
         'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'
     }
     try:
+        image_dict={}
         res = requests.get(url,headers=header)
-        #print(res.text)
-        #print(res.status_code)
         result = json.loads(res.text)['images']
-        #print(result)
-        #print(result[0]['copyright'])
-        #print(result[0]['url'])
-        download_url = "https://cn.bing.com"+result[0]['url']
-        #print(download_url)
-        image = requests.get(download_url)
-        image_name = result[0]['copyright']
-        #print(image_name.split('，')[0].split('‘')[0])
-        name = image_name.split('，')[0].split('‘')[0]
-        with open('%s.jpg'%name,'wb') as f:
-            f.write(image.content)
-            print("下载完成")
+        #download_url = "https://cn.bing.com"+result[0]['url']
+        for item in result:
+            #print(item)
+            image_name = item['copyright'].split('(')[0]
+            image_url = "https://cn.bing.com"+item['url']
+            #print(image_url)
+            image_dict[image_name] = image_url
+        #print(image_dict)
+        return image_dict
     except:
         print("获取数据失败")
 
+def download_image(image_dict):
+    try:
+        for item in image_dict:
+            downlaod_url = image_dict[item]
+            image = requests.get(downlaod_url)
+            image_name = item
+            with open('%s.jpg'%image_name,'wb') as f:
+                f.write(image.content)
+                string = "下载完成    " + "%s"%image_name
+                print(string)
+    except:
+        print("下载失败")
+
 if __name__ == "__main__":
-    url = "https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1"
-    download_image(url)    
+    url = "https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=7"
+    image_dict = getImageUrl(url)    
+    download_image(image_dict)
 
