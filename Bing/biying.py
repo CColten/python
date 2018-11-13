@@ -1,7 +1,6 @@
 # -*-coding:utf-8-*-
 import requests
 import json
-from urllib.request import urlretrieve
 
 
 def getImageUrl(url):
