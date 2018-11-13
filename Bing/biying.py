@@ -1,4 +1,10 @@
 # -*-coding:utf-8-*-
+############################################
+# Program: 用于下载必应壁纸                   #
+# History: 2017.11.12                      #
+# author: CTS                              #
+# version: Second release                  #
+############################################
 import requests
 import json
 
@@ -17,7 +23,7 @@ def getImageUrl(url):
             #print(item)
             image_name = item['copyright'].split('(')[0]
             image_url = "https://cn.bing.com"+item['url']
-            #print(image_url)
+            print(image_url)
             image_dict[image_name] = image_url
         #print(image_dict)
         return image_dict
